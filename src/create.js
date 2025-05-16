@@ -12,6 +12,16 @@ export class todoCard {
     this.priority = priority;
     this.project = project;
   }
+
+  getCardInfo() {
+    return {
+      title: this.title,
+      description: this.description,
+      dueDate: this.dueDate,
+      priority: this.priority,
+      project: this.project,
+    };
+  }
 }
 
 export function createCardElement(newCard) {
@@ -19,59 +29,106 @@ export function createCardElement(newCard) {
   cardContainer.classList.add("card-container");
   const card = document.createElement("div");
   card.classList.add("card");
+  card.todoCardInstance = newCard;
   cardContainer.appendChild(card);
   const topBar = document.createElement("div");
   topBar.classList.add("top-bar");
   card.appendChild(topBar);
   const reminderTitle = document.createElement("p");
-  //fill this in
   reminderTitle.innerText = newCard.title;
   reminderTitle.classList.add("reminder-title");
   const dropdownArrow = document.createElement("span");
   dropdownArrow.classList.add("material-symbols-outlined");
-  //add and remove class of keyboard arrow up and down
   dropdownArrow.innerText = "keyboard_arrow_down";
+  dropdownArrow.addEventListener("click", () => {
+    switch (dropdownArrow.innerText) {
+      case "keyboard_arrow_down":
+        dropdownArrow.innerText = "keyboard_arrow_up";
+        reminderDescription.classList.toggle("hidden");
+        reminderDate.classList.toggle("hidden");
+        break;
+
+      case "keyboard_arrow_up":
+        dropdownArrow.innerText = "keyboard_arrow_down";
+        reminderDescription.classList.toggle("hidden");
+        reminderDate.classList.toggle("hidden");
+        break;
+    }
+  });
+
   topBar.appendChild(reminderTitle);
   topBar.appendChild(dropdownArrow);
   const reminderDescription = document.createElement("p");
-  //add reminder description here
   reminderDescription.classList.add("reminder-description");
   reminderDescription.innerText = newCard.description;
   card.appendChild(reminderDescription);
-  //add hidden class here
   const reminderDateContainer = document.createElement("div");
   reminderDateContainer.classList.add("date-container");
   const reminderDate = document.createElement("p");
   reminderDate.classList.add("date");
   reminderDate.innerText = newCard.dueDate;
-  //add date value here
   card.appendChild(reminderDateContainer);
   reminderDateContainer.appendChild(reminderDate);
   const bottomBar = document.createElement("div");
   bottomBar.classList.add("bottom-bar");
   card.appendChild(bottomBar);
-  const deleteCard = document.createElement("span");
-  deleteCard.classList.add("material-symbols-outlined");
-  deleteCard.innerText = "delete";
-  bottomBar.appendChild(deleteCard);
   const editCard = document.createElement("span");
   editCard.classList.add("material-symbols-outlined");
   editCard.innerText = "edit";
+  editCard.addEventListener("click", (e) => {
+    const cardElement = e.target.closest(".card");
+    const cardInfo = cardElement.todoCardInstance.getCardInfo();
+    const newReminderInput = document.getElementById("title");
+    newReminderInput.value = cardInfo.title;
+    const newDescriptionInput = document.getElementById("description");
+    newDescriptionInput.value = cardInfo.description;
+    const newDateInput = document.getElementById("dueDate");
+    newDateInput.value = cardInfo.dueDate;
+    const newPriorityInput = document.getElementById("priority");
+    newPriorityInput.value = cardInfo.priority;
+    const cardContainer = e.target.closest(".card-container");
+    cardContainer.remove();
+  });
   bottomBar.appendChild(editCard);
   const blankSpace = document.createElement("span");
   bottomBar.appendChild(blankSpace);
   const flagCard = document.createElement("span");
   flagCard.classList.add("material-symbols-outlined");
+  console.log(newCard.priority);
   if (newCard.priority === "high") {
-    flagCard.classList.add("flag");
+    flagCard.classList.add("high-priority");
+    flagCard.style.color = "red";
+  } else if (newCard.priority === "low") {
+    flagCard.style.color = "black";
   }
+  //dont touch
   flagCard.innerText = "flag";
   bottomBar.appendChild(flagCard);
+  flagCard.addEventListener("click", (e) => {
+    const cardElement = e.target.closest(".card");
+    const cardInstance = cardElement.todoCardInstance;
+    switch (flagCard.style.color) {
+      case "black":
+        flagCard.style.color = "red";
+        flagCard.classList.remove("low");
+        flagCard.classList.add("high");
+        cardInstance.priority = "high";
+        break;
+
+      case "red":
+        flagCard.style.color = "black";
+        flagCard.classList.remove("high");
+        flagCard.classList.add("low");
+        cardInstance.priority = "low";
+    }
+  });
   const completeCard = document.createElement("span");
   completeCard.classList.add("material-symbols-outlined");
   completeCard.innerText = "check";
   bottomBar.appendChild(completeCard);
-  // card display = none if this is clicked
+  completeCard.addEventListener("click", (e) => {
+    e.target.closest(".card-container").remove();
+  });
   const heroContainer = document.querySelector(".hero-container");
   heroContainer.appendChild(cardContainer);
   const bottom = document.querySelector(".bottom-daily");
