@@ -12,7 +12,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/template.html",
-      favicon: "./src/favicon.ico",
+      favicon: "./src/img/lean-favicon.ico",
     }),
     new Dotenv(),
   ],
