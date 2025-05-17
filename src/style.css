@@ -37,9 +37,12 @@ body {
   margin: 0;
 }
 
+.bottom-overdue,
 .bottom-daily,
 .bottom-weekly,
-.bottom-monthly {
+.bottom-monthly,
+.bottom-yearly,
+.bottom-misc {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;

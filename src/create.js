@@ -1,3 +1,5 @@
+import { isPast, isToday, isThisWeek, isThisMonth, isThisYear } from "date-fns";
+
 export class todoCard {
   constructor(
     title = "no title",
@@ -66,6 +68,7 @@ export function createCardElement(newCard) {
   reminderDateContainer.classList.add("date-container");
   const reminderDate = document.createElement("p");
   reminderDate.classList.add("date");
+  console.log(newCard.dueDate);
   reminderDate.innerText = newCard.dueDate;
   card.appendChild(reminderDateContainer);
   reminderDateContainer.appendChild(reminderDate);
@@ -101,7 +104,6 @@ export function createCardElement(newCard) {
   } else if (newCard.priority === "low") {
     flagCard.style.color = "black";
   }
-  //dont touch
   flagCard.innerText = "flag";
   bottomBar.appendChild(flagCard);
   flagCard.addEventListener("click", (e) => {
@@ -131,6 +133,24 @@ export function createCardElement(newCard) {
   });
   const heroContainer = document.querySelector(".hero-container");
   heroContainer.appendChild(cardContainer);
-  const bottom = document.querySelector(".bottom-daily");
-  bottom.appendChild(cardContainer);
+  console.log(isPast(newCard.dueDate));
+  if (isToday(newCard.dueDate) === true) {
+    const bottom = document.querySelector(".bottom-daily");
+    bottom.appendChild(cardContainer);
+  } else if (isPast(newCard.dueDate)) {
+    const bottom = document.querySelector(".bottom-overdue");
+    bottom.appendChild(cardContainer);
+  } else if (isThisWeek(newCard.dueDate) === true) {
+    const bottom = document.querySelector(".bottom-weekly");
+    bottom.appendChild(cardContainer);
+  } else if (isThisMonth(newCard.dueDate) === true) {
+    const bottom = document.querySelector(".bottom-monthly");
+    bottom.appendChild(cardContainer);
+  } else if (isThisYear(newCard.dueDate) === true) {
+    const bottom = document.querySelector(".bottom-yearly");
+    bottom.appendChild(cardContainer);
+  } else {
+    const bottom = document.querySelector(".bottom-misc");
+    bottom.appendChild(cardContainer);
+  }
 }
